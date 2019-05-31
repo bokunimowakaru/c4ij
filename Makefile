@@ -10,9 +10,9 @@ OBJCOPY = arm-none-eabi-objcopy
 OBJDUMP = arm-none-eabi-objdump
 SIZE    = arm-none-eabi-size
 NM      = arm-none-eabi-nm
-BIN2BAS = ./bin2bas # default 0x700
-#BIN2BAS = ./bin2bas --startaddress 2048 # 0x800 for expcg
-#BIN2BAS = ./bin2bas --nolineno --startaddress 3328 # 0xd00 for exchg
+BIN2BAS = ./bin2bas
+#BIN2BAS = ./bin2bas --startaddress 3328
+BIN2BAS = ./bin2bas --nolineno --startaddress 3328 # 0xd00
 
 # Optimization (0, 1, 2, 3, 4, s)
 OPTIMIZE = s
@@ -96,8 +96,8 @@ ALL_ASFLAGS = -mcpu=$(CPU) $(THUMBIW) -I. -x assembler-with-cpp $(ASFLAGS)
 
 BAS2BIN_FLAGS = # --nopadding
 
-#all: bas2bin build size
-all: build size
+all: bas2bin build size
+#all: build size
 
 ifeq ($(OUTPUT),hex)
 build: axf hex lst sym
@@ -143,6 +143,9 @@ sym: $(PROJECT).sym
 	@echo
 	$(NM) -n $< > $@
 
+bas2bin:
+	gcc bin2bas.c -o bin2bas
+
 size:
 	$(SIZE) $(PROJECT).axf
 	ls -l $(PROJECT).bin
@@ -175,6 +178,7 @@ clean:
 	@echo
 #	rm $(BAS2BIN)
 	rm -f -r $(OBJDIR) | exit 0
+	rm -f bin2bas
 
 dasm:
 	$(OBJDUMP) -D -bbinary -marm $(PROJECT).bin -Mforce-thumb2 > asm.s
