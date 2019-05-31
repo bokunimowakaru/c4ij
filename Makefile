@@ -96,7 +96,8 @@ ALL_ASFLAGS = -mcpu=$(CPU) $(THUMBIW) -I. -x assembler-with-cpp $(ASFLAGS)
 
 BAS2BIN_FLAGS = # --nopadding
 
-all: bas2bin build size
+all: bin2bas build size
+#all: bas2bin build size
 #all: build size
 
 ifeq ($(OUTPUT),hex)
@@ -143,7 +144,7 @@ sym: $(PROJECT).sym
 	@echo
 	$(NM) -n $< > $@
 
-bas2bin:
+bin2bas:
 	gcc bin2bas.c -o bin2bas
 
 size:
